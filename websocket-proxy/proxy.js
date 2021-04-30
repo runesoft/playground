@@ -14,7 +14,7 @@ socket.on("connect", () => {
 
 // handle the event sent with socket.send()
 socket.on("request", data => {
-  console.log(data);
+  console.log(data.query);
   setTimeout(() => {
       var body = process.argv.length>3 ? process.argv[3] : 'juhuu'
     socket.emit("response", {

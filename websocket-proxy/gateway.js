@@ -1,4 +1,5 @@
 var express = require('express');
+const { runInNewContext } = require('vm');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
@@ -31,7 +32,12 @@ io.on('connection', function (socket) {
             //create id for request
             var rid= request_id++;
             responses[rid] = res;
-            socket.emit('request',{ rid: rid, headers:"",body:""})
+            socket.emit('request',{ 
+                rid: rid, 
+                headers:req.headers,
+                body:req.body, 
+                query:req.query
+            });
             console.log(`request ${rid} processed`);
         }
 	});
