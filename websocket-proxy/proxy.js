@@ -15,7 +15,7 @@ socket.on("connect", () => {
 // handle the event sent with socket.send()
 socket.on("request", data => {
   //console.log(`${data.rid} -> ${data.query}`);
-  console.log(data.query);
+  console.log({id:data.rid,...data.query});
   var body = process.argv.length>3 ? process.argv[3] : 'juhuu'
   socket.emit("response", {
     rid:data.rid,  
