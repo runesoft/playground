@@ -21,12 +21,17 @@ app.get('/*', function (req,res){
 
 io.on('connection', function (socket) {
     var request_id=1;
-    responses = {}
+    responses = {};
+    myhandlers = [];
     var game=undefined;
 	socket.on('create', function (msg) {
         //register handler for endpoint
         //define handler
         var path= msg.path
+        if(path in handlers){
+            console.log(`${msg.path} already has a handler`)
+            return;
+        }
         console.log('creating a listener for ' + path);
         handlers[path]= (req,res)=>{
             //create id for request
@@ -38,10 +43,19 @@ io.on('connection', function (socket) {
                 body:req.body, 
                 query:req.query
             });
-            console.log(`request ${rid} processed`);
-        }
+            console.log(`${req.path} request ${rid} processed`);
+        };
+        myhandlers.push(path);
 	});
 
+    socket.on('disconnect', function(msg){
+        console.log('disconnecting')
+        for(var i=0;i<myhandlers.length;i++){
+            var path= myhandlers[i];
+            console.log(`removing handler ${path}`);
+            delete handlers[path];
+        }
+    });
 	socket.on('response', function (msg) {
         rhandler = responses[msg.rid]
         if(rhandler){
