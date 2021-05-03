@@ -2,13 +2,13 @@ const io = require("socket.io-client");
 const socket = io("ws://localhost:3000");
 
 
-
+const secret = process.argv.length>4?process.argv[4]:null;
 
 
 socket.on("connect", () => {
   // either with send()
   var path =process.argv.length>2?`/${process.argv[2]}`: `/noget`
-    socket.emit("create", {path:path})
+    socket.emit("create", {path:path,secret:secret})
     console.log('connected')
 });
 

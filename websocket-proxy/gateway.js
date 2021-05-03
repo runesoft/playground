@@ -4,6 +4,9 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
+const secret = process.argv.length>2?process.argv[2]:null;
+
+
 handlers = {}
 
 app.get('/', function (req, res) {
@@ -27,6 +30,10 @@ io.on('connection', function (socket) {
 	socket.on('create', function (msg) {
         //register handler for endpoint
         //define handler
+        if(secret && secret!= msg.secret){
+            console.log("wrong secret");
+            return;
+        }
         var path= msg.path
         if(path in handlers){
             console.log(`${msg.path} already has a handler`)
